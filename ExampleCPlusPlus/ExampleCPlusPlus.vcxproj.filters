@@ -37,6 +37,15 @@
     <Filter Include="DesignPatterns\Command">
       <UniqueIdentifier>{0d8332ba-d99f-4833-8b23-d937087f6910}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DesignPatterns\EntityComponent">
+      <UniqueIdentifier>{666e2646-4221-4973-b4d1-0de5fc71c301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DesignPatterns\Observer">
+      <UniqueIdentifier>{4532ec3f-9e37-4cdc-9f5a-f627b586de46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DesignPatterns\Observer\FlexibleSubject">
+      <UniqueIdentifier>{7c693b47-b888-4315-b94f-d54fd8e393bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DesignPatterns\Singleton\BasicSoundSingleton\BasicSoundSingleton.h">
@@ -135,6 +144,28 @@
     <ClInclude Include="DesignPatterns\Command\MoveableObject.h">
       <Filter>DesignPatterns\Command</Filter>
     </ClInclude>
+    <ClInclude Include="DesignPatterns\EntityComponent\Component.h">
+      <Filter>DesignPatterns\EntityComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignPatterns\EntityComponent\Entity.h">
+      <Filter>DesignPatterns\EntityComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignPatterns\EntityComponent\stdafx.h" />
+    <ClInclude Include="DesignPatterns\Observer\Subject.h">
+      <Filter>DesignPatterns\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignPatterns\Observer\IObserver.h">
+      <Filter>DesignPatterns\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignPatterns\Observer\FlexibleSubject\FlexibleSubject.h">
+      <Filter>DesignPatterns\Observer\FlexibleSubject</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignPatterns\Observer\FlexibleSubject\IFlexibleObserver.h">
+      <Filter>DesignPatterns\Observer\FlexibleSubject</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignPatterns\Observer\FlexibleSubject\ConcreteFlexibleObserver.h">
+      <Filter>DesignPatterns\Observer\FlexibleSubject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DesignPatterns\Singleton\BasicSoundSingleton\BasicSoundSingleton.cpp">
@@ -160,6 +191,18 @@
     </ClCompile>
     <ClCompile Include="DesignPatterns\Command\CommandCoordinator.cpp">
       <Filter>DesignPatterns\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignPatterns\EntityComponent\Entity.cpp">
+      <Filter>DesignPatterns\EntityComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignPatterns\Observer\Subject.cpp">
+      <Filter>DesignPatterns\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignPatterns\Observer\FlexibleSubject\FlexibleSubject.cpp">
+      <Filter>DesignPatterns\Observer\FlexibleSubject</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignPatterns\Observer\FlexibleSubject\ConcreteFlexibleObserver.cpp">
+      <Filter>DesignPatterns\Observer\FlexibleSubject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
