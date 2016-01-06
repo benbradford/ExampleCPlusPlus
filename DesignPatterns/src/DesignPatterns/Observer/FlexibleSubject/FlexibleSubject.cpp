@@ -1,7 +1,7 @@
-#include "FlexibleSubject.h"
-#include "../IObserver.h"
+#include "DesignPatterns/Observer/FlexibleSubject/FlexibleSubject.h"
+#include "DesignPatterns/Observer/IObserver.h"
 #include <assert.h>
-#include "IFlexibleObserver.h"
+#include "DesignPatterns/Observer/FlexibleSubject/IFlexibleObserver.h"
 
 
 

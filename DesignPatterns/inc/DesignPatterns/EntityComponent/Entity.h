@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include <typeinfo>
+#include <cassert>
 
 class Component;
 
@@ -47,7 +48,7 @@ inline bool Entity::HasComponent(unsigned int componentType) const
 }
 
 template <typename ComponentType, typename... ARGS>
-static ComponentType& Entity::CreateAndAddComponent(Entity& entity, ARGS... args)
+ComponentType& Entity::CreateAndAddComponent(Entity& entity, ARGS... args)
 {
 	ComponentType* component = new ComponentType(entity, args...);
 	entity.mComponents[GetComponentType<ComponentType>()].reset(component);

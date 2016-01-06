@@ -16,9 +16,8 @@ public:
 private:
 	std::vector<std::shared_ptr<IObserver>> mObservers;
 
-#ifdef _DEBUG
 	bool mIsNotifying = false;
-#endif
+
 };
 
 

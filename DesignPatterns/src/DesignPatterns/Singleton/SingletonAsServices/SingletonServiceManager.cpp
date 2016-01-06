@@ -1,4 +1,4 @@
-#include "SingletonServiceManager.h"
+#include "DesignPatterns/Singleton/SingletonAsServices/SingletonServiceManager.h"
 
 
 SingletonServiceManager::SingletonServiceManager()

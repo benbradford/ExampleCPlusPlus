@@ -1,5 +1,5 @@
-#include "Entity.h"
-#include "Component.h"
+#include "DesignPatterns/EntityComponent/Entity.h"
+#include "DesignPatterns/EntityComponent/Component.h"
 
 Entity::Entity()
 {

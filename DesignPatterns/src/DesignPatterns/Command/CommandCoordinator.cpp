@@ -1,5 +1,5 @@
-#include "CommandCoordinator.h"
-#include "ICommand.h"
+#include "DesignPatterns/Command/CommandCoordinator.h"
+#include "DesignPatterns/Command/ICommand.h"
 
 CommandCoordinator::CommandCoordinator()
 : mCommandTip(0)

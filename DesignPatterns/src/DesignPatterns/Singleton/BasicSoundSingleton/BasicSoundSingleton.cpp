@@ -1,4 +1,4 @@
-#include "BasicSoundSingleton.h"
+#include "DesignPatterns/Singleton/BasicSoundSingleton/BasicSoundSingleton.h"
 
 BasicSoundSingleton::BasicSoundSingleton()
 : mIsSoundPlaying(false)

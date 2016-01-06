@@ -1,7 +1,7 @@
-#include "GuiApplication.h"
-#include "IWindow.h"
-#include "IButton.h"
-#include "IAbstractGUIFactory.h"
+#include "DesignPatterns/AbstractFactory/GuiApplication.h"
+#include "DesignPatterns/AbstractFactory/IWindow.h"
+#include "DesignPatterns/AbstractFactory/IButton.h"
+#include "DesignPatterns/AbstractFactory/IAbstractGUIFactory.h"
 
 GuiApplication::GuiApplication(const IAbstractGUIFactory& factory)
 : mWindow(factory.CreateWindow())

@@ -1,5 +1,5 @@
-#include "Subject.h"
-#include "IObserver.h"
+#include "DesignPatterns/Observer/Subject.h"
+#include "DesignPatterns/Observer/IObserver.h"
 #include <assert.h>
 
 Subject::Subject()

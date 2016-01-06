@@ -3,6 +3,7 @@
 #include "IServiceSingleton.h"
 #include <map>
 #include <memory>
+#include <cassert>
 
 class SingletonServiceManager
 {
@@ -104,5 +105,5 @@ inline const BaseType& SingletonServiceManager::Resolve() const
 		// :TODO: handle error
 	}
 
-	return static_cast<const T>(*mSingletonServices.find(GetSingletonServiceId<BaseType>())->second);
+	return static_cast<const BaseType>(*mSingletonServices.find(GetSingletonServiceId<BaseType>())->second);
 }

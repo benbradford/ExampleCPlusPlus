@@ -1,4 +1,4 @@
-#include "AdvancedSoundSingleton.h"
+#include "DesignPatterns/Singleton/AdvancedManagedSingleton/AdvancedSoundSingleton.h"
 
 AdvancedSoundSingleton::AdvancedSoundSingleton()
 : mIsPlaying(false)

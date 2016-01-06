@@ -1,4 +1,4 @@
-#include "ConcreteFlexibleObserver.h"
+#include "DesignPatterns/Observer/FlexibleSubject/ConcreteFlexibleObserver.h"
 
 ConcreteFlexibleObserver*ConcreteFlexibleObserver::Create(FlexibleSubject& subject)
 {
