@@ -1,1 +1,4 @@
 build
+*.tags
+*.sublime-project
+*.sublime-workspace
