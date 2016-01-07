@@ -5,7 +5,7 @@ project(testdesignpatterns)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g")
 
 #Bring the headers into the project
-include_directories(inc/ ./../../../gtest/googletest/googletest/include ./../../../gtest/googletest/googlemock/include  )
+include_directories( ../inc inc/ ./../../../gtest/googletest/googletest/include ./../../../gtest/googletest/googlemock/include  )
 
 #Add sources
 file(GLOB SOURCES "src/*.cpp" "test/src/*.cpp")

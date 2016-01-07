@@ -11,8 +11,9 @@ class GuiApplication
 public:
 	GuiApplication(const IAbstractGUIFactory& factory);
 
-	const IWindow& GetMainWindow() const { return *mWindow; }
-
+	IWindow& GetMainWindow() const { return *mWindow; }
+	IButton& GetButton1() const { return *mButton1; }
+	IButton& GetButton2() const { return *mButton2; }
 private:
 	const std::unique_ptr<IWindow> mWindow;
 	const std::unique_ptr<IButton> mButton1;
