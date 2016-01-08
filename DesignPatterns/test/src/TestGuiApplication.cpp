@@ -24,6 +24,7 @@ protected:
 	private:
 		unsigned int& mClicks;
 	};
+	
 	struct MockWindow : public IWindow
 	{
 		MockWindow(WindowState& state) : mState(state){}
