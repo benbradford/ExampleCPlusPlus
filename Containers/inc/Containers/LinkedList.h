@@ -13,7 +13,7 @@ private:
 	};
 public:
 
-	
+	// :TODO: forward iterator only, an improvent could to be include a -- operator
 	struct Iterator
 	{
 		T value;
@@ -60,7 +60,12 @@ public:
 	}
 
 	LinkedList(LinkedList&&) = default;
-	LinkedList& operator=(LinkedList&&) =default;
+	LinkedList& operator=(LinkedList&& other)
+	{
+		// note, we could just use the default move operator=, but included another example of how to achieve this
+		swap(other, *this);
+		return *this;
+	}
 
 	Iterator begin() const { if (mSize == 0) return end(); return Iterator{mStart->value, mStart.get(), 0};}
 	Iterator end() const { return Iterator{T{}, nullptr, mSize};}
@@ -73,6 +78,7 @@ public:
 		}
 		else 
 		{
+			// :TODO: we do not cache the last element, so we have to iterate through to the end
 			Node* curr = mStart.get();
 			Node* next = curr;
 			while (next)
@@ -93,6 +99,32 @@ public:
 		++mSize;
 	}
 
+	void InsertBefore(const Iterator& position, const T& value)
+	{
+		std::unique_ptr<Node> newNode(new Node{value});
+		if (position.index == 0)
+		{
+			if (mStart.get())
+			{
+				newNode->next = std::move(mStart);
+			}
+				mStart = std::move(newNode);
+			
+		}
+		else 
+		{
+			// note no backward iterator, so having to search from start
+			std::unique_ptr<Node>* before = &mStart;
+			for (auto i = 0u; i < position.index-1; ++i)
+			{
+				before = &(*before)->next;
+			}
+			newNode->next = std::move((*before)->next);
+			(*before)->next = std::move(newNode);
+		}
+		++mSize;
+	}
+
 	void Delete(const Iterator& position)
 	{
 		if (position.index == 0)
@@ -101,6 +133,7 @@ public:
 		}
 		else 
 		{
+			// note no backward iterator, so having to search from start
 			std::unique_ptr<Node>* before = &mStart;
 			for (auto i = 0u; i < position.index-1; ++i)
 			{

@@ -7,14 +7,14 @@ TEST(TestLinkedList, CanPushBack)
 	ASSERT_NO_THROW(l.PushBack(0));
 }
 
-TEST(LinkedList, CanGetBegin)
+TEST(TestLinkedList, CanGetBegin)
 {
 	LinkedList<int> l;
 	l.PushBack(0);
 	ASSERT_EQ(l.begin().value, 0);
 }
 
-TEST(LinkedList, CanCompareWithEnd)
+TEST(TestLinkedList, CanCompareWithEnd)
 {
 	LinkedList<int> l;
 	l.PushBack(100);
@@ -30,6 +30,44 @@ TEST(TestLinkedList, CanCopy)
 	l.PushBack(2);
 	LinkedList<int> l2(l);
 	ASSERT_EQ(l2.Size(), 3);
+}
+
+TEST(TestLinkedList, CanInsertBeforeInMiddleOfList)
+{
+	LinkedList<int> l;
+	l.PushBack(1);
+	l.PushBack(3);
+	auto it = l.begin();
+	++it;
+	l.InsertBefore(it,2);
+	auto testit = l.begin();
+	ASSERT_EQ(testit.value, 1);
+	++testit;
+	ASSERT_EQ(testit.value, 2);
+	++testit;
+	ASSERT_EQ(testit.value, 3);
+}
+
+TEST(TestLinkedList, CanInsertBeforeAtStart)
+{
+	LinkedList<int> l;
+	l.PushBack(2);
+	l.PushBack(3);
+	l.InsertBefore(l.begin(),1);
+	auto testit = l.begin();
+	ASSERT_EQ(testit.value, 1);
+	++testit;
+	ASSERT_EQ(testit.value, 2);
+	++testit;
+	ASSERT_EQ(testit.value, 3);
+}
+
+TEST(TestLinkedList, CanInsertBeforeAtStartOfEmpty)
+{
+	LinkedList<int> l;
+	l.InsertBefore(l.begin(),1);
+	ASSERT_EQ(l.begin().value, 1);
+	
 }
 
 TEST(TestLinkedList, CanAssign)
