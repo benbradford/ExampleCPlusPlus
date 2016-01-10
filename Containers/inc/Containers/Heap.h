@@ -37,11 +37,13 @@ public:
 	template <typename Iterator>
 	void Add(Iterator start, Iterator end);
 	void Add(const T& value);
+	void Add(T&& value);
 	const T& Peek() const;
 	T Pop();
 	index_t Size() const { return mSize; }
 
 private:
+	static void Swap(Heap&& lhs, Heap&& rhs);
 	static void Swap(Heap& lhs, Heap& rhs);
 	void ShiftUp(index_t node);
 	void ShiftDown(index_t node);
@@ -63,6 +65,16 @@ void Heap<T,CompFunc>::Swap(Heap& lhs, Heap& rhs)
 	std::swap(lhs.mMaxSize, rhs.mMaxSize);
 	std::swap(lhs.mCompareFunction, rhs.mCompareFunction);
 	std::swap(lhs.mData, rhs.mData);
+	std::swap(lhs.mSize, rhs.mSize);
+}
+
+template <typename T, typename CompFunc>
+void Heap<T,CompFunc>::Swap(Heap&& lhs, Heap&& rhs)
+{
+	printf("================================move swap");
+	std::swap(lhs.mMaxSize, rhs.mMaxSize);
+	std::swap(lhs.mCompareFunction, rhs.mCompareFunction);
+	std::swap(std::forward<std::unique_ptr<T[]>>(lhs.mData), std::forward<std::unique_ptr<T[]>>(rhs.mData));
 	std::swap(lhs.mSize, rhs.mSize);
 }
 
@@ -121,6 +133,14 @@ void Heap<T, CompFunc>::Add(const T& value)
 }
 
 template <typename T, typename CompFunc>
+void Heap<T, CompFunc>::Add(T&& value)
+{
+	assert(mSize < mMaxSize);
+	mData[mSize] = std::forward<T>(value);
+	ShiftUp(mSize++);
+}
+
+template <typename T, typename CompFunc>
 template <typename Iterator>
 void Heap<T, CompFunc>::Add(Iterator start, Iterator end)
 {
@@ -141,11 +161,9 @@ template <typename T, typename CompFunc>
 T Heap<T, CompFunc>::Pop()
 {
 	assert(Size());
-	T data = mData[0];
-	--mSize;
-	mData[0] = mData[mSize];
+	std::swap(mData[0], mData[--mSize]);
 	ShiftDown(0);
-	return data;
+	return std::forward<T>(mData[mSize]);
 }
 
 template <typename T, typename CompFunc>
@@ -210,7 +228,11 @@ unsigned int Heap<T, CompFunc>::GetMaxChild(index_t index) const
 template <typename T, typename CompFunc>
 void Heap<T, CompFunc>::Swap(index_t a, index_t b)
 {
-	auto tmp = mData[a];
-	mData[a] = mData[b];
-	mData[b] = tmp;
+	std::swap(mData[a], mData[b]);
 }
+
+template <typename T>
+using MaxHeap = Heap<T, HeapLtFunc<T>>;
+
+template <typename T>
+using MinHeap = Heap<T, HeapGtFunc<T>>;
