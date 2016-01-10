@@ -7,8 +7,7 @@ public:
 	struct Iterator
 	{
 	public:
-		T value;
-
+		
 		T& operator*() { return value;}
 
 		bool operator==(const Iterator& other) const
@@ -25,13 +24,18 @@ public:
 		{
 			if (index++ >= vec.mCapacity-1)
 			{
-				value = T{};
+				value = nullptr;
+			}
+			else 
+			{
+				value = &vec.mData[index];
 			}
 			return *this;
 		}
 	private:
-		Iterator(const T& v, unsigned int i, Vector& vc)
+		Iterator(T* v, unsigned int i, Vector& vc)
 		: value(v), index(i), vec(vc){}
+		T* value;
 		unsigned int index;
 		Vector& vec;
 		friend class Vector;
@@ -64,6 +68,7 @@ public:
 	Vector(Vector&& other) = default;
 	Vector& operator=(Vector&& other) = default;
 
+	// :TODO: add move
 	void PushBack(const T& value)
 	{
 		if (mSize == mCapacity)
@@ -93,7 +98,7 @@ public:
 	{
 		for (int i=position; i < mSize; ++i)
 		{
-			mData[i] = mData[i]+1;
+			std::swap(mData[i], mData[i+1]);
 		}
 		mData[mSize--] = T{};
 	}
@@ -104,8 +109,8 @@ public:
 	unsigned int Size() const { return mSize; }
 	unsigned int Capacity() const { return mCapacity; }
 
-	Iterator begin() { return Iterator{mData[0],0,*this};}
-	Iterator end() { return Iterator{T{}, mCapacity,*this};}
+	Iterator begin() { return Iterator{&mData[0],0,*this};}
+	Iterator end() { return Iterator{nullptr, mCapacity,*this};}
 	
 	static void swap(Vector& lhs, Vector& rhs)
 	{

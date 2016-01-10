@@ -16,8 +16,7 @@ public:
 	// :TODO: forward iterator only, an improvent could to be include a -- operator
 	struct Iterator
 	{
-		T value;
-
+		
 		bool operator==(const Iterator& other) const { return index == other.index;}
 		bool operator!=(const Iterator& other) const { return !(*this == other);}
 		Iterator operator++()
@@ -27,17 +26,18 @@ public:
 			if (node && node->next.get())
 			{
 				node = node->next.get();
-				value = node->value;
+				value = &node->value;
 			}
 			return *this;
 		}
-		T& operator*() { return value;}
+		T& operator*() { return *value;}
 
 	private:
+		T* value;
 		Node* node;
 		unsigned int index;
 
-		Iterator(const T& v, Node* n, unsigned int i)
+		Iterator(T* v, Node* n, unsigned int i)
 		: value(v)
 		, node(n)
 		, index(i)
@@ -67,8 +67,8 @@ public:
 		return *this;
 	}
 
-	Iterator begin() const { if (mSize == 0) return end(); return Iterator{mStart->value, mStart.get(), 0};}
-	Iterator end() const { return Iterator{T{}, nullptr, mSize};}
+	Iterator begin() const { if (mSize == 0) return end(); return Iterator{&mStart->value, mStart.get(), 0};}
+	Iterator end() const { return Iterator{nullptr, nullptr, mSize};}
 	
 	void PushBack(const T& value)
 	{
@@ -108,7 +108,7 @@ public:
 			{
 				newNode->next = std::move(mStart);
 			}
-				mStart = std::move(newNode);
+			mStart = std::move(newNode);
 			
 		}
 		else 
@@ -152,7 +152,7 @@ public:
 		{
 			if (search->value == value)
 			{
-				return Iterator{value, search, searchFrom.index + count};
+				return Iterator{const_cast<T*>(&value), search, searchFrom.index + count};
 			}
 			++count;
 			search = search->next.get();

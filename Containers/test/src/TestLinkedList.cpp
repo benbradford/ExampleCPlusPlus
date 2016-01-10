@@ -11,14 +11,13 @@ TEST(TestLinkedList, CanGetBegin)
 {
 	LinkedList<int> l;
 	l.PushBack(0);
-	ASSERT_EQ(l.begin().value, 0);
+	ASSERT_EQ(*l.begin(), 0);
 }
 
 TEST(TestLinkedList, CanCompareWithEnd)
 {
 	LinkedList<int> l;
 	l.PushBack(100);
-	ASSERT_NE(l.begin().value, l.end().value);
 	ASSERT_EQ(l.end(), l.end());
 }
 
@@ -41,11 +40,11 @@ TEST(TestLinkedList, CanInsertBeforeInMiddleOfList)
 	++it;
 	l.InsertBefore(it,2);
 	auto testit = l.begin();
-	ASSERT_EQ(testit.value, 1);
+	ASSERT_EQ(*testit, 1);
 	++testit;
-	ASSERT_EQ(testit.value, 2);
+	ASSERT_EQ(*testit, 2);
 	++testit;
-	ASSERT_EQ(testit.value, 3);
+	ASSERT_EQ(*testit, 3);
 }
 
 TEST(TestLinkedList, CanInsertBeforeAtStart)
@@ -55,18 +54,18 @@ TEST(TestLinkedList, CanInsertBeforeAtStart)
 	l.PushBack(3);
 	l.InsertBefore(l.begin(),1);
 	auto testit = l.begin();
-	ASSERT_EQ(testit.value, 1);
+	ASSERT_EQ(*testit, 1);
 	++testit;
-	ASSERT_EQ(testit.value, 2);
+	ASSERT_EQ(*testit, 2);
 	++testit;
-	ASSERT_EQ(testit.value, 3);
+	ASSERT_EQ(*testit, 3);
 }
 
 TEST(TestLinkedList, CanInsertBeforeAtStartOfEmpty)
 {
 	LinkedList<int> l;
 	l.InsertBefore(l.begin(),1);
-	ASSERT_EQ(l.begin().value, 1);
+	ASSERT_EQ(*l.begin(), 1);
 	
 }
 
@@ -98,7 +97,7 @@ TEST(TestLinkedList, CanFindFirst)
 
 	auto it = l.FindFirst(l.begin(), 2);
 	ASSERT_NE(it, l.end());
-	ASSERT_EQ(it.value,2);
+	ASSERT_EQ(*it,2);
 }
 
 TEST(TestLinkedList, CanFindFirstStartingPartWayThrough)
@@ -124,7 +123,7 @@ TEST(TestLinkedList, CanFindIfStartingAtFindElement)
 
 	auto it = l.FindFirst(l.begin(),0);
 	ASSERT_NE(it, l.end());
-	ASSERT_EQ(it.value,0);
+	ASSERT_EQ(*it,0);
 }
 
 TEST(TestLinkedList, FailureToFindReturnsEnd)
@@ -146,7 +145,7 @@ TEST(TestLinkedList, DeleteBeforeRetainsIntegrity)
 	l.PushBack(1);
 	ASSERT_NO_THROW(l.Delete(l.begin()));
 	ASSERT_EQ(l.Size(),1);
-	ASSERT_EQ(l.begin().value, 1);
+	ASSERT_EQ(*l.begin(), 1);
 }
 
 TEST(TestLinkedList, DeleteAfterRetainsIntegrity)
@@ -158,7 +157,7 @@ TEST(TestLinkedList, DeleteAfterRetainsIntegrity)
 	++it;
 	ASSERT_NO_THROW(l.Delete(it));
 	ASSERT_EQ(l.Size(),1);
-	ASSERT_EQ(l.begin().value, 0);
+	ASSERT_EQ(*l.begin(), 0);
 }
 
 LinkedList<int> GetListTest()

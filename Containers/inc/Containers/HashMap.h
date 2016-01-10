@@ -24,8 +24,7 @@ public:
 
 	struct Iterator
 	{
-		KEY key;
-		VALUE value;
+		KEY& first() { return *key; }
 		bool operator==(const Iterator& other) const
 		{
 			return (me == nullptr && other.me == nullptr) 
@@ -36,33 +35,38 @@ public:
 		{
 			return !(*this==other);
 		}
+
+		VALUE& operator*() { return *value;}
 	
 		Iterator operator++()
 		{
 			
 			if (me->next.get()!= nullptr)
 			{
-				return CreateNext(Iterator{me->next->key, me->next->value, me->next.get(), bucketIndex, hashmap});
+				return CreateNext(Iterator{&me->next->key, &me->next->value, me->next.get(), bucketIndex, hashmap});
 			}
 
 			for (unsigned int i = 1+bucketIndex; i < hashmap->mNumBuckets; ++i)
 			{
-				const EntryNode* candidate = hashmap->mDataEntries[i].get();
+				 EntryNode* candidate = hashmap->mDataEntries[i].get();
 				if (candidate)
 				{
-					return CreateNext(Iterator{candidate->key, candidate->value, candidate, i, hashmap});
+					return CreateNext(Iterator{&candidate->key, &candidate->value, candidate, i, hashmap});
 				}
 			}
-			return CreateNext( hashmap->mEnd );
+			return CreateNext( hashmap->end());
 		
 		}
 		private:
+		KEY* key;
+		VALUE* value;
+		
 		const EntryNode* me;
 		unsigned int bucketIndex;
 		const HashMap* hashmap;
 		friend class HashMap;
 		
-		Iterator(const KEY& k, const VALUE& v, const EntryNode* m, unsigned int i, const HashMap* hm)
+		Iterator(KEY* k, VALUE* v, const EntryNode* m, unsigned int i, const HashMap* hm)
 		: key(k)
 		, value(v)
 		, me(m)
@@ -87,9 +91,9 @@ public:
 	};
 
 	VALUE& operator[](const KEY& key);
-	Iterator 	find(const KEY& key) const;
+	Iterator 	find(const KEY& key) ;
 	Iterator   	begin();
-	Iterator 	end() { return mEnd; }
+	Iterator 	end() const{ return {nullptr, nullptr, nullptr,0,nullptr};}
 	unsigned int Size() const { return mSize;}
 	void Log(std::stringstream& stream) const;
 private:
@@ -100,13 +104,12 @@ private:
 	const size_type		mNumBuckets;
 	DataEntries			mDataEntries;
 	int 				mSize;
-	Iterator 			mEnd;
-
+	
 	unsigned int GetHashValue(const KEY& key) const { return mHashFunction(key) % mNumBuckets; }
 
-	Iterator CreateIterator(const EntryNode& node, unsigned int index) const
+	Iterator CreateIterator(EntryNode& node, unsigned int index)
 	{
-		return Iterator{node.key, node.value, &node, index, this};
+		return Iterator{&node.key, &node.value, &node, index, this};
 	}
 };
 
@@ -116,7 +119,6 @@ inline HashMap<KEY, VALUE>::HashMap(const HashFunction & hashFunction, size_type
 	, mNumBuckets(numBuckets)
 	, mDataEntries(new std::unique_ptr<EntryNode>[numBuckets])
 	, mSize(0)
-	, mEnd{KEY{},VALUE{}, nullptr,0,nullptr}
 {
 }
 
@@ -146,19 +148,18 @@ inline VALUE& HashMap<KEY, VALUE>::operator[](const KEY & key)
 		}
 	}
 
-	//printf("op[] key = %i, hashIndex = %i, size = %i\n", key, hashIndex, mSize);
 	return (*node)->value;
 }
 
 template<typename KEY, typename VALUE>
-inline typename HashMap<KEY,VALUE>::Iterator HashMap<KEY, VALUE>::find(const KEY & key) const
+inline typename HashMap<KEY,VALUE>::Iterator HashMap<KEY, VALUE>::find(const KEY & key)
 {
 	const auto hashIndex = GetHashValue(key);
 	const auto& dataIndex = hashIndex;
 	auto* node = &mDataEntries[dataIndex];
 	if (node->get() == nullptr)
 	{
-		return mEnd;
+		return end();
 	}
 	while((*node)->key != key)
 	{
@@ -177,7 +178,7 @@ inline typename HashMap<KEY,VALUE>::Iterator HashMap<KEY, VALUE>::begin()
 			return CreateIterator(*mDataEntries[i], i);
 		}
 	}
-	return mEnd;
+	return end();
 }
 
 template<typename KEY, typename VALUE>
