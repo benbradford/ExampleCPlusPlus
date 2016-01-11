@@ -35,19 +35,16 @@ TEST(TestBinaryTree, CanIterate)
 	t.Add(0);
 	t.Add(7);
 	t.Add(8);
-	t.Add(15);
-	t.Add(14);
 	int count = 0;
-	for (auto v : t)
+	for (auto it = t.begin(); it != t.end(); ++it)
 	{
-		if (count <= 8)
-		{
-			ASSERT_EQ(v, count);
-			
-		}
+		auto v = *it;
+		printf("%i at depth %i\n", v, it.depth);
+		ASSERT_EQ(v, count);
+
 		count++;
 	}
-	ASSERT_EQ(count, 11);
+	ASSERT_EQ(count, 9);
 }
 
 TEST(TestBinaryTree, CanIterateWhenOnlyOne)
@@ -72,4 +69,25 @@ TEST(TestBinaryTree, IterateWhenNoneWontIterate)
 		count++;
 	}
 	ASSERT_EQ(count, 0);
+}
+
+TEST(TestBinaryTree, CanGetAllByDepth)
+{
+	BinaryTree<int> t;
+	t.Add(3);
+	t.Add(5);
+	t.Add(1);
+	t.Add(6);
+	t.Add(2);
+	t.Add(4);
+	t.Add(0);
+
+	auto list = t.GetAllAtDepth(3);
+	ASSERT_EQ(list.size(), 4);
+	int v = 0;
+	for (auto i : list)
+	{
+		ASSERT_EQ(*i, v);
+		v+=2;
+	}
 }

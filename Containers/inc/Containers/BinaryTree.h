@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <cassert>
-
+#include <list>
 template <typename T>
 class BinaryTree
 {
@@ -49,6 +49,7 @@ public:
 					{
 						last = node;
 						node = node->parent;
+						--depth;
 					}
 					else 
 					{
@@ -72,6 +73,7 @@ public:
 
 		Node* SearchUp(Node* node)
 		{
+			--depth;
 			last = node;
 			if (node == nullptr || node->parent == nullptr)
 				return nullptr;
@@ -85,10 +87,12 @@ public:
 
 		Node* SearchDown(Node* node)
 		{
+			++depth;
 			//assert(node->left.get() || node->right.get());
 			if (node->left.get() && node->left.get() != last)
 			{				
 				last = node;
+				
 				return SearchDown(node->left.get());
 			}
 			else 
@@ -106,14 +110,27 @@ public:
 		Node* node;
 		Node* last;
 		Node* finalNode;
+	public:
+		unsigned int depth;
+	private:
 		friend class BinaryTree;
 		Iterator(T* v, Node* n, Node* finalN)
 		: value(v)
 		, node(n)
 		, last(nullptr)
 		, finalNode(finalN)
+		, depth(0)
 		{
-
+			if (node)
+			{	
+				depth = 1;
+				Node* depthFinder = node;
+				while (depthFinder->parent)
+				{
+					++depth;
+					depthFinder = depthFinder->parent;
+				}
+			}
 		}
 	};
 	BinaryTree()
@@ -184,6 +201,18 @@ public:
 
 	Iterator FindFirst(const Iterator& from, const T& value);
 
+	std::list<Iterator> GetAllAtDepth(unsigned int depth) const 
+	{
+		std::list<Iterator> list;
+		auto e = end();
+		for (Iterator it = begin(); it != e; ++ it)
+		{
+			if (it.depth == depth)
+				list.push_back(it);
+		}
+		return list;
+
+	}
 private:
 	std::unique_ptr<Node> mRoot;
 	unsigned int mSize;
@@ -196,8 +225,7 @@ private:
 			while (node->right.get())
 				node = node->right.get();
 
-			printf("last node is %i\n", node->value);
-		 	return node;
+			return node;
 		} 
 		return nullptr;
 	}
