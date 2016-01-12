@@ -76,7 +76,7 @@ TEST(TestHashMap, CanFindValidEntry)
 {
 	HashMap<int,int> map(std::bind(intinthash::hash,std::placeholders::_1));
 	map[0] = 5;
-	ASSERT_EQ(*map.find(0), 5);
+	ASSERT_EQ((*map.find(0)).second, 5);
 }
 
 TEST(TestHashMap, CanManiupluatePointerInValidFind)
@@ -84,7 +84,7 @@ TEST(TestHashMap, CanManiupluatePointerInValidFind)
 	HashMap<int,int> map(std::bind(intinthash::hash,std::placeholders::_1));
 	map[0] = 5;
 	auto found = map.find(0);
-	(*found)++;
+	(*found).second++;
 	ASSERT_EQ(map[0],6);
 }
 
@@ -116,7 +116,7 @@ TEST(TestHashMap, CanIterate)
 	cout << s.str().c_str() << endl;
 	for (HashMap<int,int>::Iterator it = map.begin(); it != map.end(); ++it)
 	{
-		um[it.first()] = *it;
+		um[(*it).first] = (*it).second;
 	}
 	ASSERT_EQ(um.size(), map.Size());
 }

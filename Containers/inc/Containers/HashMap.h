@@ -3,6 +3,7 @@
 #include <functional>
 #include <vector>
 #include <sstream>
+#include <limits>
 
 template <typename KEY, typename VALUE>
 class HashMap
@@ -24,7 +25,6 @@ public:
 
 	struct Iterator
 	{
-		KEY& first() { return *key; }
 		bool operator==(const Iterator& other) const
 		{
 			return (me == nullptr && other.me == nullptr) 
@@ -36,14 +36,14 @@ public:
 			return !(*this==other);
 		}
 
-		VALUE& operator*() { return *value;}
+		std::pair<KEY&, VALUE&> operator*() { return std::pair<KEY&,VALUE&>(*key,*value);}
 	
 		Iterator operator++()
 		{
 			
 			if (me->next.get()!= nullptr)
 			{
-				return CreateNext(Iterator{&me->next->key, &me->next->value, me->next.get(), bucketIndex, hashmap});
+				return CreateNext(Iterator{me->next->key, me->next->value, me->next.get(), bucketIndex, hashmap});
 			}
 
 			for (unsigned int i = 1+bucketIndex; i < hashmap->mNumBuckets; ++i)
@@ -51,7 +51,7 @@ public:
 				 EntryNode* candidate = hashmap->mDataEntries[i].get();
 				if (candidate)
 				{
-					return CreateNext(Iterator{&candidate->key, &candidate->value, candidate, i, hashmap});
+					return CreateNext(Iterator{candidate->key, candidate->value, candidate, i, hashmap});
 				}
 			}
 			return CreateNext( hashmap->end());
@@ -60,18 +60,25 @@ public:
 		private:
 		KEY* key;
 		VALUE* value;
-		
 		const EntryNode* me;
 		unsigned int bucketIndex;
 		const HashMap* hashmap;
 		friend class HashMap;
 		
-		Iterator(KEY* k, VALUE* v, const EntryNode* m, unsigned int i, const HashMap* hm)
-		: key(k)
-		, value(v)
+		Iterator(KEY& k, VALUE& v, const EntryNode* m, unsigned int i, const HashMap* hm)
+		: key(&k)
+		, value(&v)
 		, me(m)
 		, bucketIndex(i)
 		, hashmap(hm)		
+		{}
+
+		Iterator()
+		: key(nullptr)
+		, value(nullptr)
+		, me(nullptr)
+		, bucketIndex(std::numeric_limits<unsigned int>::max())
+		, hashmap(nullptr)		
 		{}
 
 		static void swap(Iterator& lhs, Iterator& rhs)
@@ -93,7 +100,7 @@ public:
 	VALUE& operator[](const KEY& key);
 	Iterator 	find(const KEY& key) ;
 	Iterator   	begin();
-	Iterator 	end() const{ return {nullptr, nullptr, nullptr,0,nullptr};}
+	Iterator 	end() const{ return Iterator{};}
 	unsigned int Size() const { return mSize;}
 	void Log(std::stringstream& stream) const;
 private:
@@ -109,7 +116,7 @@ private:
 
 	Iterator CreateIterator(EntryNode& node, unsigned int index)
 	{
-		return Iterator{&node.key, &node.value, &node, index, this};
+		return Iterator{node.key, node.value, &node, index, this};
 	}
 };
 
