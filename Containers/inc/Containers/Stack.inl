@@ -1,13 +1,16 @@
+#pragma once
+
+#include "Stack.h"
 
 template <typename T>
-Stack<T>::Stack()
+inline Stack<T>::Stack()
 : mSize(0)
 {
 
 }
 
 template <typename T>
-Stack<T>::Stack(const Stack& other)
+inline Stack<T>::Stack(const Stack& other)
 : mSize(0)
 {
 	if (other.mSize == 0)
@@ -20,7 +23,7 @@ Stack<T>::Stack(const Stack& other)
 }
 
 template <typename T>
-Stack<T>::Stack(Stack&& other)
+inline Stack<T>::Stack(Stack&& other)
 : mSize(0)
 {
 	if (other.mSize == 0)
@@ -34,7 +37,7 @@ Stack<T>::Stack(Stack&& other)
 }
 
 template <typename T>
-Stack<T>& Stack<T>::operator=(const Stack& other)
+inline Stack<T>& Stack<T>::operator=(const Stack& other)
 {
 	printf("stack assign\n");
 	if (other.mSize == 0)
@@ -50,7 +53,7 @@ Stack<T>& Stack<T>::operator=(const Stack& other)
 }
 
 template <typename T>
-Stack<T>& Stack<T>::operator=(Stack&& other)
+inline Stack<T>& Stack<T>::operator=(Stack&& other)
 {
 	if (other.mSize == 0)
 	{
@@ -65,7 +68,7 @@ Stack<T>& Stack<T>::operator=(Stack&& other)
 }
 
 template <typename T>
-void Stack<T>::CopyTo(Data* node)
+inline void Stack<T>::CopyTo(Data* node)
 {
 	if(node->mBelow.get())
 	{
@@ -77,7 +80,7 @@ void Stack<T>::CopyTo(Data* node)
 }
 
 template <typename T>
-void Stack<T>::MoveTo(std::unique_ptr<Data> node)
+inline void Stack<T>::MoveTo(std::unique_ptr<Data> node)
 {
 	if(node->mBelow.get())
 	{
@@ -90,21 +93,25 @@ void Stack<T>::MoveTo(std::unique_ptr<Data> node)
 }
 
 template <typename T>
-void Stack<T>::Push(const T& t)
+inline void Stack<T>::Push(const T& t)
 {
-	mTop = std::make_unique<Data>(t, std::move(mTop));
+	auto newTop = std::make_unique<Data>(t);
+	newTop->mBelow = std::move(mTop);
+	mTop = std::move(newTop);
 	++mSize;
 }
 
 template <typename T>
-void Stack<T>::Push(T&& t)
+inline void Stack<T>::Push(T&& t)
 {
-	mTop = std::make_unique<Data>(std::forward<T>(t), std::move(mTop));
+	auto newTop = std::make_unique<Data>(std::forward<T>(t));
+	newTop->mBelow = std::move(mTop);
+	mTop = std::move(newTop);
 	++mSize;
 }
 
 template <typename T>
-T& Stack<T>::Peek()
+inline T& Stack<T>::Peek()
 {
 	if (mSize == 0)
 		throw PeekWhenEmptyException{};
@@ -112,7 +119,7 @@ T& Stack<T>::Peek()
 }
 
 template <typename T>
-const T& Stack<T>::Peek() const
+inline const T& Stack<T>::Peek() const
 {
 	if (mSize == 0)
 		throw PeekWhenEmptyException{};
@@ -120,7 +127,7 @@ const T& Stack<T>::Peek() const
 }
 
 template <typename T>
-void Stack<T>::Pop()
+inline void Stack<T>::Pop()
 {
 	if (mSize == 0)
 		throw PopWhenEmptyException{};
@@ -129,30 +136,14 @@ void Stack<T>::Pop()
 }
 
 template <typename T>
-Stack<T>::Data::Data( const T& value, std::unique_ptr<Data> below)
-: mValue(value)
-, mBelow(std::move(below))
-{
-
-}
-
-template <typename T>
-Stack<T>::Data::Data(T&& value, std::unique_ptr<Data> below)
-: mValue(std::move(value))
-, mBelow(std::move(below))
-{
-
-}
-
-template <typename T>
-Stack<T>::Data::Data(const T& value)
+inline Stack<T>::Data::Data(const T& value)
 : mValue(value)
 {
 
 }
 
 template <typename T>
-Stack<T>::Data::Data(T&& value)
+inline Stack<T>::Data::Data(T&& value)
 : mValue(std::move(value))
 {
 

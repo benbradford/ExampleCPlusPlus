@@ -1,5 +1,5 @@
 #include "test/TestCommon.h"
-#include "Containers/Stack.h"
+#include "Containers/Stack.inl"
 
 TEST(TestStack, CanPush)
 {
@@ -144,6 +144,7 @@ public:
 	struct Throws
 	{
 		friend class ThrowsHandle;
+		bool shouldThrowOnConstruction = false;
 		bool shouldThrowWhenCopiedFrom = false;
 		bool shouldThrowWhenAssignedFrom = false;
 		bool shouldThrowWhenMoveFrom = false;
@@ -176,12 +177,16 @@ public:
 		if (data)
 			delete [] data;
 	}
-	Big(int i, bool dothrow = false)
+	Big(int i)
 		: data(new char[256]), index(i)
+	{
+		if (throws.shouldThrowOnConstruction)
 		{
-			if (dothrow)
-				throw BigCtorThrow{};
+			delete []data;
+			data = nullptr;
+			throw BigCtorThrow{};
 		}
+	}
 	Big(const Big& other)
 		: data(new char[256]), index(other.index)
 	{
@@ -209,8 +214,8 @@ public:
 	}
 
 	Big(Big&&other)
-	: data(std::move(other.data))
-	, index(other.index)
+		: data(std::move(other.data))
+		, index(other.index)
 	{
 		printf("move\n");
 		if (throws.shouldThrowWhenMoveFrom)
@@ -320,6 +325,8 @@ TEST(TestStack, ExceptionInAssignOfBigLeavesObjectInEmptyState)
 		ASSERT_EQ(other.Size(),1);
 		ASSERT_NO_THROW(other.Pop());
 		ASSERT_EQ(other.Size(),0);
+		ASSERT_THROW(other.Pop(), PopWhenEmptyException);
+		ASSERT_THROW(other.Peek(), PeekWhenEmptyException);
 	}
 	catch(...)
 	{
@@ -350,10 +357,31 @@ TEST(TestStack, ExceptionInMoveAssignOfBigLeavesObjectInEmptyState)
 		ASSERT_NO_THROW(other.Pop()); 
 		ASSERT_NO_THROW(other.Pop());
 		ASSERT_EQ(other.Size(),0);
+		ASSERT_THROW(other.Pop(), PopWhenEmptyException);
+		ASSERT_THROW(other.Peek(), PeekWhenEmptyException);
 	}
 	catch(...)
 	{
 		ASSERT_EQ(true,false);
 	}
 	ASSERT_EQ(thrown, true);
+}
+
+TEST(TestStack, ThrowsInConstructorOfBigLeaveStackInRolledBackState)
+{
+	Stack<Big> bigstack;
+	auto handle = Big::ThrowsHandle{};
+	bigstack.Push(Big{10});
+	handle.get().shouldThrowOnConstruction = true;
+	ASSERT_THROW(bigstack.Push(Big{99}), BigCtorThrow);
+	ASSERT_EQ(bigstack.Size(), 1);
+	handle.get().shouldThrowOnConstruction = false;
+	ASSERT_NO_THROW(bigstack.Peek());
+	ASSERT_EQ(bigstack.Peek().index, 10);
+	ASSERT_NO_THROW(bigstack.Push(Big{20}));
+	ASSERT_EQ(bigstack.Peek().index,20);
+	ASSERT_NO_THROW(bigstack.Pop());
+	ASSERT_NO_THROW(bigstack.Pop());
+	ASSERT_THROW(bigstack.Pop(), PopWhenEmptyException);
+	ASSERT_THROW(bigstack.Peek(), PeekWhenEmptyException);
 }

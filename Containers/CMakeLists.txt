@@ -10,8 +10,4 @@ include_directories(inc/ )
 #Add sources
 file(GLOB SOURCES "src/*.cpp" )
 
-#Link static lib
-#set ( PROJECT_LINK_LIBS gtest gmock )
-#link_directories (./../gtest/googletest/googlemock/bin ./../gtest/googletest/googletest/bin )
-
 add_library(containers STATIC ${SOURCES})

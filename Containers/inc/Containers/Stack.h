@@ -29,8 +29,6 @@ private:
 		T mValue;
 		std::unique_ptr<Data> mBelow;
 
-		Data( const T& value, std::unique_ptr<Data> below);
-		Data(T&& value, std::unique_ptr<Data> below);
 		Data(const T& value);
 		Data(T&& value);
 	};
@@ -41,5 +39,3 @@ private:
 	std::unique_ptr<Data> mTop;
 	unsigned int mSize;
 };
-
-#include "Containers/Stack.inl"
